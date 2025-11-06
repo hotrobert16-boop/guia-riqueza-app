@@ -24,6 +24,27 @@ export function PremiumGuard({
     )
   }
 
+  // Função para redirecionar para o checkout da Kirvano
+  const handlePremiumSubscription = () => {
+    if (!user) {
+      // Se não estiver logado, redirecionar para login primeiro
+      window.location.href = '/login'
+      return
+    }
+
+    // URL do checkout da Kirvano - substitua pela URL real do seu produto
+    const kirvanoCheckoutUrl = process.env.NEXT_PUBLIC_KIRVANO_CHECKOUT_URL || 'https://checkout.kirvano.com/seu-produto-id'
+    
+    // Adicionar parâmetros do usuário para personalizar o checkout
+    const checkoutUrl = new URL(kirvanoCheckoutUrl)
+    checkoutUrl.searchParams.set('customer_email', user.email)
+    checkoutUrl.searchParams.set('customer_name', user.name || '')
+    checkoutUrl.searchParams.set('user_id', user.id)
+    
+    // Redirecionar para o checkout
+    window.open(checkoutUrl.toString(), '_blank')
+  }
+
   // Se requer login e usuário não está logado
   if (requireLogin && !user) {
     return fallback || (
@@ -34,7 +55,10 @@ export function PremiumGuard({
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             Faça login para acessar este recurso
           </p>
-          <Button className="bg-blue-500 hover:bg-blue-600">
+          <Button 
+            className="bg-blue-500 hover:bg-blue-600"
+            onClick={() => window.location.href = '/login'}
+          >
             <LogIn className="w-4 h-4 mr-2" />
             Fazer Login
           </Button>
@@ -55,7 +79,10 @@ export function PremiumGuard({
             Desbloqueie acesso completo ao Guia da Riqueza!
           </p>
           <div className="space-y-3">
-            <Button className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold">
+            <Button 
+              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200"
+              onClick={handlePremiumSubscription}
+            >
               <Crown className="w-4 h-4 mr-2" />
               Assinar Premium
             </Button>

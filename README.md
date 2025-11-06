@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Guia da Riqueza 💰
 
-## Getting Started
+Uma plataforma completa de educação financeira com sistema de planos premium e acesso limitado para usuários não assinantes.
 
-First, run the development server:
+## 🚀 Funcionalidades
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Landing Page Atrativa**: Design moderno com gradientes e animações
+- **Sistema de Planos**: Gratuito, Premium e VIP
+- **Acesso Limitado**: Conteúdo bloqueado para usuários não assinantes
+- **Integração Kirvano**: Links diretos para checkout
+- **Design Responsivo**: Funciona perfeitamente em mobile e desktop
+- **SEO Otimizado**: Meta tags e estrutura otimizada para buscadores
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📋 Planos Disponíveis
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🆓 Gratuito
+- Introdução aos Investimentos
+- Conceitos Básicos de Renda Fixa
+- Como Começar a Investir
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ⭐ Premium (R$ 97/mês)
+- Todo conteúdo gratuito +
+- Estratégias Avançadas de Investimento
+- Análise de Ações e FIIs
+- Diversificação de Portfólio
+- Planejamento Financeiro Pessoal
+- Investimentos Internacionais
+- Criptomoedas e Ativos Digitais
 
-## Learn More
+### 👑 VIP (R$ 297/mês)
+- Todo conteúdo Premium +
+- Consultoria Personalizada 1:1
+- Análises Exclusivas de Mercado
+- Grupo VIP no Telegram
+- Webinars Ao Vivo Semanais
+- Planilhas Profissionais
+- Suporte Prioritário 24/7
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tecnologias
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js 15** - Framework React
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Estilização
+- **Shadcn/ui** - Componentes UI
+- **Lucide React** - Ícones
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Deploy
 
-## Deploy on Vercel
+Este projeto está configurado para deploy automático na Vercel:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Conecte seu repositório GitHub à Vercel
+2. Configure as variáveis de ambiente (se necessário)
+3. O deploy será feito automaticamente
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔗 Integração Kirvano
+
+Os links de checkout estão configurados para:
+- Premium: `https://kirvano.com/checkout/premium-guia-riqueza`
+- VIP: `https://kirvano.com/checkout/vip-guia-riqueza`
+
+## 📱 Responsividade
+
+O projeto foi desenvolvido com abordagem mobile-first e funciona perfeitamente em:
+- 📱 Mobile (320px+)
+- 📱 Tablet (768px+)
+- 💻 Desktop (1024px+)
+- 🖥️ Large Desktop (1440px+)
+
+## 🎨 Design
+
+- **Cores**: Gradientes modernos com roxo, azul, amarelo e laranja
+- **Tipografia**: Geist Sans e Geist Mono
+- **Animações**: Transições suaves e efeitos hover
+- **Layout**: Cards com backdrop blur e sombras modernas
+
+## 🚀 Como Usar
+
+1. Clone o repositório
+2. Instale as dependências: `npm install`
+3. Execute o projeto: `npm run dev`
+4. Acesse: `http://localhost:3000`
+
+## 📈 SEO e Performance
+
+- Meta tags otimizadas
+- Open Graph configurado
+- Twitter Cards
+- Estrutura semântica
+- Imagens otimizadas
+- CSS otimizado
+
+---
+
+**Desenvolvido para maximizar conversões e proporcionar a melhor experiência do usuário.**
