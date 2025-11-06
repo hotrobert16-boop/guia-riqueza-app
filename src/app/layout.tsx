@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+// Import all available fonts for AI usage
+import "../lib/fonts";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,26 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Guia da Riqueza - Transforme sua Mentalidade Financeira",
-  description: "Plataforma completa para desenvolver mentalidade de riqueza com IA, ferramentas financeiras, áudios motivacionais e desafios diários. Conquiste sua prosperidade financeira!",
-  keywords: "riqueza, mentalidade financeira, investimentos, prosperidade, dinheiro, sucesso financeiro, educação financeira",
-  authors: [{ name: "Guia da Riqueza" }],
-  openGraph: {
-    title: "Guia da Riqueza - Transforme sua Mentalidade Financeira",
-    description: "Plataforma completa para desenvolver mentalidade de riqueza com IA, ferramentas financeiras e conteúdo exclusivo",
-    type: "website",
-    locale: "pt_BR",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Guia da Riqueza - Transforme sua Mentalidade Financeira",
-    description: "Plataforma completa para desenvolver mentalidade de riqueza com IA, ferramentas financeiras e conteúdo exclusivo",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  viewport: "width=device-width, initial-scale=1",
+  title: "Criado com a Lasy",
+  description: "Projeto criado com Lasy AI",
 };
 
 export default function RootLayout({
@@ -46,9 +30,6 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head>
         <Script src="/lasy-bridge.js" strategy="beforeInteractive" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icon.svg" />
-        <meta name="theme-color" content="#EAB308" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
