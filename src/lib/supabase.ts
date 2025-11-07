@@ -6,25 +6,40 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Tipos para o banco de dados
-export interface Profile {
+export interface User {
   id: string
   email: string
-  full_name: string | null
-  avatar_url: string | null
+  name: string
   is_premium: boolean
-  premium_expires_at: string | null
-  subscription_id: string | null
+  premium_expires_at?: string
+  kirvano_customer_id?: string
   created_at: string
   updated_at: string
 }
 
-export interface UserProgress {
+export interface Subscription {
   id: string
   user_id: string
-  lesson_id: string
-  completed: boolean
-  completed_at: string | null
-  progress_percentage: number
+  kirvano_payment_id: string
+  plan_type: 'monthly' | 'quarterly' | 'semiannual' | 'annual'
+  status: 'active' | 'cancelled' | 'expired'
+  amount: number
+  currency: string
+  starts_at: string
+  expires_at: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Payment {
+  id: string
+  user_id: string
+  subscription_id?: string
+  kirvano_payment_id: string
+  amount: number
+  currency: string
+  status: 'pending' | 'completed' | 'failed' | 'refunded'
+  payment_method: string
   created_at: string
   updated_at: string
 }

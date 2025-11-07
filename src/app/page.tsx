@@ -25,13 +25,10 @@ export default function GuiaDaRiqueza() {
   const [userPlan, setUserPlan] = useState<'free' | 'premium' | 'vip'>('free');
 
   const handleKirvanoCheckout = (plan: string) => {
-    // Links para checkout da Kirvano
-    const checkoutLinks = {
-      premium: "https://kirvano.com/checkout/premium-guia-riqueza",
-      vip: "https://kirvano.com/checkout/vip-guia-riqueza"
-    };
+    // Link para checkout da Kirvano - Plano Mensal
+    const checkoutUrl = "https://pay.kirvano.com/37bf7c6e-84e3-47ad-b46c-83d6bfe3d87e";
     
-    window.open(checkoutLinks[plan as keyof typeof checkoutLinks], '_blank');
+    window.open(checkoutUrl, '_blank');
   };
 
   const freeContent = [

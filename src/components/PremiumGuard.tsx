@@ -32,17 +32,11 @@ export function PremiumGuard({
       return
     }
 
-    // URL do checkout da Kirvano - substitua pela URL real do seu produto
-    const kirvanoCheckoutUrl = process.env.NEXT_PUBLIC_KIRVANO_CHECKOUT_URL || 'https://checkout.kirvano.com/seu-produto-id'
-    
-    // Adicionar parâmetros do usuário para personalizar o checkout
-    const checkoutUrl = new URL(kirvanoCheckoutUrl)
-    checkoutUrl.searchParams.set('customer_email', user.email)
-    checkoutUrl.searchParams.set('customer_name', user.name || '')
-    checkoutUrl.searchParams.set('user_id', user.id)
+    // URL do checkout da Kirvano - Plano Mensal
+    const kirvanoCheckoutUrl = 'https://pay.kirvano.com/37bf7c6e-84e3-47ad-b46c-83d6bfe3d87e'
     
     // Redirecionar para o checkout
-    window.open(checkoutUrl.toString(), '_blank')
+    window.open(kirvanoCheckoutUrl, '_blank')
   }
 
   // Se requer login e usuário não está logado
