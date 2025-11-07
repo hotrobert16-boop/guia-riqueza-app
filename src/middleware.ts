@@ -1,41 +1,47 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+// Simulação de verificação de pagamento Kirvano
+// Em produção, isso seria uma chamada para API da Kirvano
+async function checkKirvanoPayment(userId: string): Promise<boolean> {
+  // Aqui você faria uma chamada real para a API da Kirvano
+  // Por enquanto, retorna false para simular usuário não pagante
+  return false;
+}
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const { pathname } = request.nextUrl;
   
-  // Verificar se é uma rota protegida
-  const protectedRoutes = ['/dashboard', '/premium', '/admin']
+  // Rotas que requerem pagamento
+  const protectedRoutes = ['/premium', '/vip', '/content'];
+  
+  // Verificar se a rota atual é protegida
   const isProtectedRoute = protectedRoutes.some(route => 
-    request.nextUrl.pathname.startsWith(route)
-  )
-
+    pathname.startsWith(route)
+  );
+  
   if (isProtectedRoute) {
-    // Verificar autenticação via cookie ou header
-    const authToken = request.cookies.get('auth-token')?.value ||
-                     request.headers.get('authorization')?.replace('Bearer ', '')
-
-    if (!authToken) {
-      // Redirecionar para login se não autenticado
-      const loginUrl = new URL('/login', request.url)
-      loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
-      return NextResponse.redirect(loginUrl)
-    }
-
-    // Verificar se é rota premium
-    const premiumRoutes = ['/premium', '/dashboard/premium']
-    const isPremiumRoute = premiumRoutes.some(route => 
-      request.nextUrl.pathname.startsWith(route)
-    )
-
-    if (isPremiumRoute) {
-      // Aqui você pode verificar se o usuário tem assinatura premium
-      // Por enquanto, vamos permitir acesso
+    // Verificar se usuário tem acesso pago via Kirvano
+    const userId = request.cookies.get('user_id')?.value || 'anonymous';
+    
+    try {
+      const hasPaidAccess = await checkKirvanoPayment(userId);
+      
+      if (!hasPaidAccess) {
+        // Redirecionar para página de pagamento
+        const url = request.nextUrl.clone();
+        url.pathname = '/';
+        url.searchParams.set('payment_required', 'true');
+        return NextResponse.redirect(url);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar pagamento:', error);
+      // Em caso de erro, permitir acesso (ou redirecionar conforme sua lógica)
+      return NextResponse.next();
     }
   }
-
-  return response
+  
+  return NextResponse.next();
 }
 
 export const config = {
@@ -49,4 +55,4 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
-}
+};

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,16 +18,54 @@ import {
   ArrowRight,
   Zap,
   Shield,
-  Infinity
+  Infinity,
+  AlertCircle
 } from "lucide-react";
+import { checkUserSubscription, KIRVANO_CONFIG } from "@/lib/kirvano";
 
 export default function GuiaDaRiqueza() {
   const [userPlan, setUserPlan] = useState<'free' | 'premium' | 'vip'>('free');
+  const [isLoading, setIsLoading] = useState(true);
+  const [paymentRequired, setPaymentRequired] = useState(false);
 
-  const handleKirvanoCheckout = (plan: string) => {
-    // Link para checkout da Kirvano - Plano Mensal
-    const checkoutUrl = "https://pay.kirvano.com/37bf7c6e-84e3-47ad-b46c-83d6bfe3d87e";
+  useEffect(() => {
+    // Verificar se usuário chegou via redirect de pagamento obrigatório
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('payment_required') === 'true') {
+      setPaymentRequired(true);
+    }
+
+    // Verificar status de assinatura do usuário
+    checkUserAccess();
+  }, []);
+
+  const checkUserAccess = async () => {
+    try {
+      // Simular verificação de usuário
+      // Em produção, você obteria o ID do usuário logado
+      const userId = localStorage.getItem('user_id') || 'anonymous';
+      
+      const subscription = await checkUserSubscription(userId);
+      
+      if (subscription && subscription.subscription_status === 'active') {
+        setUserPlan(subscription.plan);
+      } else {
+        setUserPlan('free');
+      }
+    } catch (error) {
+      console.error('Erro ao verificar acesso:', error);
+      setUserPlan('free');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKirvanoCheckout = (plan: 'premium' | 'vip') => {
+    // Salvar tentativa de compra
+    localStorage.setItem('attempted_plan', plan);
     
+    // Redirecionar para checkout da Kirvano
+    const checkoutUrl = KIRVANO_CONFIG.CHECKOUT_URLS[plan];
     window.open(checkoutUrl, '_blank');
   };
 
@@ -55,8 +93,31 @@ export default function GuiaDaRiqueza() {
     "Suporte Prioritário 24/7"
   ];
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg">Verificando seu acesso...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Alerta de Pagamento Obrigatório */}
+      {paymentRequired && (
+        <div className="bg-red-900/50 border-b border-red-700 backdrop-blur-sm">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-center space-x-2 text-red-200">
+              <AlertCircle className="w-5 h-5" />
+              <span className="font-semibold">Acesso Restrito: Pagamento necessário para continuar</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="border-b border-purple-800/30 bg-black/20 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
@@ -108,13 +169,15 @@ export default function GuiaDaRiqueza() {
             </div>
           </div>
 
-          <Button 
-            size="lg" 
-            className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold text-lg px-8 py-4 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300"
-            onClick={() => handleKirvanoCheckout('premium')}
-          >
-            Começar Agora <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
+          {userPlan === 'free' && (
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold text-lg px-8 py-4 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300"
+              onClick={() => handleKirvanoCheckout('premium')}
+            >
+              Começar Agora <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          )}
         </div>
       </section>
 
@@ -183,8 +246,9 @@ export default function GuiaDaRiqueza() {
                 <Button 
                   className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold"
                   onClick={() => handleKirvanoCheckout('premium')}
+                  disabled={userPlan === 'premium'}
                 >
-                  Assinar Premium <Zap className="ml-2 w-4 h-4" />
+                  {userPlan === 'premium' ? 'Plano Atual' : 'Assinar Premium'} <Zap className="ml-2 w-4 h-4" />
                 </Button>
               </CardContent>
             </Card>
@@ -211,8 +275,9 @@ export default function GuiaDaRiqueza() {
                 <Button 
                   className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold"
                   onClick={() => handleKirvanoCheckout('vip')}
+                  disabled={userPlan === 'vip'}
                 >
-                  Assinar VIP <Crown className="ml-2 w-4 h-4" />
+                  {userPlan === 'vip' ? 'Plano Atual' : 'Assinar VIP'} <Crown className="ml-2 w-4 h-4" />
                 </Button>
               </CardContent>
             </Card>
@@ -325,30 +390,32 @@ export default function GuiaDaRiqueza() {
       </section>
 
       {/* CTA Final */}
-      <section className="py-20 px-4 bg-gradient-to-r from-purple-900/50 to-blue-900/50">
-        <div className="container mx-auto text-center">
-          <h3 className="text-4xl font-bold text-white mb-6">Pronto Para Mudar Sua Vida?</h3>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Junte-se a milhares de pessoas que já transformaram suas vidas financeiras com nosso método comprovado.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold text-lg px-8 py-4"
-              onClick={() => handleKirvanoCheckout('premium')}
-            >
-              Começar Premium <Star className="ml-2 w-5 h-5" />
-            </Button>
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold text-lg px-8 py-4"
-              onClick={() => handleKirvanoCheckout('vip')}
-            >
-              Ir Direto para VIP <Crown className="ml-2 w-5 h-5" />
-            </Button>
+      {userPlan === 'free' && (
+        <section className="py-20 px-4 bg-gradient-to-r from-purple-900/50 to-blue-900/50">
+          <div className="container mx-auto text-center">
+            <h3 className="text-4xl font-bold text-white mb-6">Pronto Para Mudar Sua Vida?</h3>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Junte-se a milhares de pessoas que já transformaram suas vidas financeiras com nosso método comprovado.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-bold text-lg px-8 py-4"
+                onClick={() => handleKirvanoCheckout('premium')}
+              >
+                Começar Premium <Star className="ml-2 w-5 h-5" />
+              </Button>
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold text-lg px-8 py-4"
+                onClick={() => handleKirvanoCheckout('vip')}
+              >
+                Ir Direto para VIP <Crown className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="bg-black/40 border-t border-gray-800 py-12 px-4">
