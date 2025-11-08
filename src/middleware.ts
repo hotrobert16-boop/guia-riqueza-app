@@ -23,21 +23,14 @@ export async function middleware(request: NextRequest) {
   if (isProtectedRoute) {
     // Verificar se usuário tem acesso pago via Kirvano
     const userId = request.cookies.get('user_id')?.value || 'anonymous';
+    const hasPaidAccess = await checkKirvanoPayment(userId);
     
-    try {
-      const hasPaidAccess = await checkKirvanoPayment(userId);
-      
-      if (!hasPaidAccess) {
-        // Redirecionar para página de pagamento
-        const url = request.nextUrl.clone();
-        url.pathname = '/';
-        url.searchParams.set('payment_required', 'true');
-        return NextResponse.redirect(url);
-      }
-    } catch (error) {
-      console.error('Erro ao verificar pagamento:', error);
-      // Em caso de erro, permitir acesso (ou redirecionar conforme sua lógica)
-      return NextResponse.next();
+    if (!hasPaidAccess) {
+      // Redirecionar para página de pagamento
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      url.searchParams.set('payment_required', 'true');
+      return NextResponse.redirect(url);
     }
   }
   

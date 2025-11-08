@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 // Configuração da API Kirvano
 export const KIRVANO_CONFIG = {
   // URL base da API Kirvano
@@ -73,6 +71,7 @@ export function validateKirvanoWebhook(payload: string, signature: string): bool
   // Implementar validação de assinatura do webhook
   // Isso depende do método de assinatura usado pela Kirvano
   // Por exemplo, usando HMAC SHA256
+  const crypto = require('crypto');
   const expectedSignature = crypto
     .createHmac('sha256', KIRVANO_CONFIG.WEBHOOK_SECRET)
     .update(payload)
